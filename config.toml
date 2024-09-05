@@ -1,0 +1,10 @@
+[database]
+host = "db"
+port = 5432
+user = "user"
+password = "password"
+name = "booksdb"
+
+[server]
+host = "localhost"
+port = 8080

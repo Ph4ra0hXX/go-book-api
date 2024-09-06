@@ -6,6 +6,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	handlerBook "github.com/Ph4ra0hXX/go-book-api/book/handler"
+	"github.com/Ph4ra0hXX/go-book-api/middleware"
 	handlerPage "github.com/Ph4ra0hXX/go-book-api/page/handler"
 	handlerTranslation "github.com/Ph4ra0hXX/go-book-api/translation/handler"
 	handlerUser "github.com/Ph4ra0hXX/go-book-api/user/handler"
@@ -41,24 +42,27 @@ func main() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Origin", "Content-Type"},
-		ExposeHeaders:    []string{"Content-Length"},
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Authorization", "Origin", "Content-Type", "Accept"},
+		ExposeHeaders:    []string{"Authorization", "Content-Length"},
 		AllowCredentials: true,
 	}))
 
-	router.GET("/books", handlerBook.GetBooks)
-	router.GET("/books/:id", handlerBook.GetBookByID)
-	router.POST("/books", handlerBook.CreateBook)
-	router.PUT("/books", handlerBook.UpdateBook)
-	router.DELETE("/books/:id", handlerBook.DeleteBook)
+	protectedRoutes := router.Group("/")
+	protectedRoutes.Use(middleware.AuthMiddleware())
 
-	router.GET("/pages/:book_id/pages", handlerPage.GetPagesHandler)
-	router.GET("/pages/:book_id/pages/:page_number", handlerPage.GetPageByIDHandler)
-	router.POST("/pages", handlerPage.CreatePageHandler)
-	router.PUT("/pages/:book_id/pages/:page_number", handlerPage.UpdatePageHandler)
-	router.DELETE("/pages/:book_id/pages/:page_number", handlerPage.DeletePageHandler)
+	protectedRoutes.GET("/books", handlerBook.GetBooks)
+	protectedRoutes.GET("/books/:id", handlerBook.GetBookByID)
+	protectedRoutes.POST("/books", handlerBook.CreateBook)
+	protectedRoutes.PUT("/books", handlerBook.UpdateBook)
+	protectedRoutes.DELETE("/books/:id", handlerBook.DeleteBook)
+
+	protectedRoutes.GET("/pages/:book_id/pages", handlerPage.GetPagesHandler)
+	protectedRoutes.GET("/pages/:book_id/pages/:page_number", handlerPage.GetPageByIDHandler)
+	protectedRoutes.POST("/pages", handlerPage.CreatePageHandler)
+	protectedRoutes.PUT("/pages/:book_id/pages/:page_number", handlerPage.UpdatePageHandler)
+	protectedRoutes.DELETE("/pages/:book_id/pages/:page_number", handlerPage.DeletePageHandler)
 
 	router.GET("/translate/:word", handlerTranslation.GetTranslationHandler)
 

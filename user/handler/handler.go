@@ -56,20 +56,17 @@ func LoginUserHandler(c *gin.Context) {
 		return
 	}
 
-	// Buscar o usuário pelo nome de usuário
 	storedUser, err := repository.GetUserByUsername(loginRequest.Username)
 	if err != nil || storedUser == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Usuário ou senha incorretos"})
 		return
 	}
 
-	// Verificar se a senha está correta
 	if !CheckPasswordHash(loginRequest.Password, storedUser.Password) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Usuário ou senha incorretos"})
 		return
 	}
 
-	// Gerar o token JWT
 	token, err := service.GenerateToken(storedUser.Username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Falha ao gerar token"})

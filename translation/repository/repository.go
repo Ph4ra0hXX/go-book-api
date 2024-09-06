@@ -29,7 +29,6 @@ func init() {
 	if _, err := toml.DecodeFile("config.toml", &config); err != nil {
 		log.Fatal(err)
 	}
-
 	connStr := getDBConnectionString()
 	var err error
 	db, err = sql.Open("postgres", connStr)
@@ -53,4 +52,19 @@ func GetTranslation(word string) (*model.Translation, error) {
 		return nil, err
 	}
 	return &translation, nil
+}
+
+func CreateTranslation(translation *model.Translation) error {
+	_, err := db.Exec("INSERT INTO Translation (word, translation) VALUES ($1, $2)", translation.Word, translation.Translation)
+	return err
+}
+
+func UpdateTranslation(word string, translation *model.Translation) error {
+	_, err := db.Exec("UPDATE Translation SET translation = $1 WHERE word = $2", translation.Translation, word)
+	return err
+}
+
+func DeleteTranslation(word string) error {
+	_, err := db.Exec("DELETE FROM Translation WHERE word = $1", word)
+	return err
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/BurntSushi/toml"
 	handlerBook "github.com/Ph4ra0hXX/go-book-api/book/handler"
 	handlerPage "github.com/Ph4ra0hXX/go-book-api/page/handler"
+	"github.com/Ph4ra0hXX/go-book-api/translation/handler"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -57,6 +58,8 @@ func main() {
 	router.POST("/pages", handlerPage.CreatePageHandler)
 	router.PUT("/pages/:book_id/pages/:page_number", handlerPage.UpdatePageHandler)
 	router.DELETE("/pages/:book_id/pages/:page_number", handlerPage.DeletePageHandler)
+
+	router.GET("/translate/:word", handler.GetTranslationHandler)
 
 	address := fmt.Sprintf("%s:%d", config.Server.Host, config.Server.Port)
 	router.Run(address)

@@ -58,7 +58,7 @@ func getDBConnectionString() string {
 
 // GetBooks retorna todos os livros
 func GetBooks() []model.Book {
-	rows, err := db.Query("SELECT id, image, author FROM books")
+	rows, err := db.Query("SELECT id, image, author, title FROM books")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,7 +67,7 @@ func GetBooks() []model.Book {
 	var books []model.Book
 	for rows.Next() {
 		var book model.Book
-		if err := rows.Scan(&book.ID, &book.Image, &book.Author); err != nil {
+		if err := rows.Scan(&book.ID, &book.Image, &book.Author, &book.Title); err != nil {
 			log.Fatal(err)
 		}
 		books = append(books, book)
@@ -77,9 +77,9 @@ func GetBooks() []model.Book {
 
 // GetBookByID retorna um livro pelo ID
 func GetBookByID(id int) *model.Book {
-	row := db.QueryRow("SELECT id, image, author FROM books WHERE id = $1", id)
+	row := db.QueryRow("SELECT id, image, author, title FROM books WHERE id = $1", id)
 	var book model.Book
-	if err := row.Scan(&book.ID, &book.Image, &book.Author); err != nil {
+	if err := row.Scan(&book.ID, &book.Image, &book.Author, &book.Title); err != nil {
 		return nil
 	}
 	return &book
@@ -87,7 +87,7 @@ func GetBookByID(id int) *model.Book {
 
 // CreateBook adiciona um novo livro ao banco de dados
 func CreateBook(newBook model.Book) {
-	_, err := db.Exec("INSERT INTO books (id, image, author) VALUES ($1, $2, $3)", newBook.ID, newBook.Image, newBook.Author)
+	_, err := db.Exec("INSERT INTO books (id, image, author, title) VALUES ($1, $2, $3, $4)", newBook.ID, newBook.Image, newBook.Author, newBook.Title)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -95,7 +95,7 @@ func CreateBook(newBook model.Book) {
 
 // UpdateBook atualiza um livro existente no banco de dados
 func UpdateBook(updatedBook model.Book) bool {
-	result, err := db.Exec("UPDATE books SET image = $2, author = $3 WHERE id = $1", updatedBook.ID, updatedBook.Image, updatedBook.Author)
+	result, err := db.Exec("UPDATE books SET image = $2, author = $3, author = $4 WHERE id = $1", updatedBook.ID, updatedBook.Image, updatedBook.Author, updatedBook.Title)
 	if err != nil {
 		log.Fatal(err)
 	}

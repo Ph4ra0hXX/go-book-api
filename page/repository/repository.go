@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/BurntSushi/toml"
 	"github.com/Ph4ra0hXX/go-book-api/page/model"
 	_ "github.com/lib/pq" // PostgreSQL driver
 )
@@ -14,7 +15,6 @@ var (
 	config Config
 )
 
-// Config armazena as configurações do banco de dados
 type Config struct {
 	Database struct {
 		Host     string
@@ -26,24 +26,10 @@ type Config struct {
 }
 
 func init() {
-	// Definir configurações diretamente
-	config = Config{
-		Database: struct {
-			Host     string
-			Port     int
-			User     string
-			Password string
-			Name     string
-		}{
-			Host:     "localhost",
-			Port:     5432,
-			User:     "user",
-			Password: "password",
-			Name:     "booksdb",
-		},
+	if _, err := toml.DecodeFile("config.toml", &config); err != nil {
+		log.Fatal(err)
 	}
 
-	// Configurar conexão com o banco de dados
 	connStr := getDBConnectionString()
 	var err error
 	db, err = sql.Open("postgres", connStr)
@@ -51,6 +37,7 @@ func init() {
 		log.Fatal(err)
 	}
 }
+
 func getDBConnectionString() string {
 	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		config.Database.Host, config.Database.Port, config.Database.User, config.Database.Password, config.Database.Name)

@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetPagesHandler lida com a requisição GET para obter todas as páginas de um livro
 func GetPagesHandler(c *gin.Context) {
 	bookID, err := strconv.Atoi(c.Param("book_id"))
 	if err != nil {
@@ -21,7 +20,6 @@ func GetPagesHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, pages)
 }
 
-// GetPageByIDHandler lida com a requisição GET para obter uma página pelo número da página e ID do livro
 func GetPageByIDHandler(c *gin.Context) {
 	bookID, err := strconv.Atoi(c.Param("book_id"))
 	if err != nil {
@@ -42,7 +40,6 @@ func GetPageByIDHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, page)
 }
 
-// CreatePageHandler lida com a requisição POST para criar uma nova página
 func CreatePageHandler(c *gin.Context) {
 	var newPage model.Page
 	if err := c.ShouldBindJSON(&newPage); err != nil {
@@ -54,7 +51,6 @@ func CreatePageHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Página criada com sucesso"})
 }
 
-// UpdatePageHandler lida com a requisição PUT para atualizar uma página
 func UpdatePageHandler(c *gin.Context) {
 	bookID, err := strconv.Atoi(c.Param("book_id"))
 	if err != nil {
@@ -82,7 +78,6 @@ func UpdatePageHandler(c *gin.Context) {
 	}
 }
 
-// DeletePageHandler lida com a requisição DELETE para remover uma página
 func DeletePageHandler(c *gin.Context) {
 	bookID, err := strconv.Atoi(c.Param("book_id"))
 	if err != nil {

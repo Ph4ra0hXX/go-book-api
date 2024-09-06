@@ -7,7 +7,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/Ph4ra0hXX/go-book-api/book/model"
-	_ "github.com/lib/pq" // PostgreSQL driver
+	_ "github.com/lib/pq"
 )
 
 var (
@@ -43,7 +43,6 @@ func getDBConnectionString() string {
 		config.Database.Host, config.Database.Port, config.Database.User, config.Database.Password, config.Database.Name)
 }
 
-// GetBooks retorna todos os livros
 func GetBooks() []model.Book {
 	rows, err := db.Query("SELECT id, image, author, title FROM books")
 	if err != nil {
@@ -62,7 +61,6 @@ func GetBooks() []model.Book {
 	return books
 }
 
-// GetBookByID retorna um livro pelo ID
 func GetBookByID(id int) *model.Book {
 	row := db.QueryRow("SELECT id, image, author, title FROM books WHERE id = $1", id)
 	var book model.Book
@@ -72,7 +70,6 @@ func GetBookByID(id int) *model.Book {
 	return &book
 }
 
-// CreateBook adiciona um novo livro ao banco de dados
 func CreateBook(newBook model.Book) {
 	_, err := db.Exec("INSERT INTO books (id, image, author, title) VALUES ($1, $2, $3, $4)", newBook.ID, newBook.Image, newBook.Author, newBook.Title)
 	if err != nil {
@@ -80,7 +77,6 @@ func CreateBook(newBook model.Book) {
 	}
 }
 
-// UpdateBook atualiza um livro existente no banco de dados
 func UpdateBook(updatedBook model.Book) bool {
 	result, err := db.Exec("UPDATE books SET image = $2, author = $3, author = $4 WHERE id = $1", updatedBook.ID, updatedBook.Image, updatedBook.Author, updatedBook.Title)
 	if err != nil {
@@ -90,7 +86,6 @@ func UpdateBook(updatedBook model.Book) bool {
 	return rowsAffected > 0
 }
 
-// DeleteBook remove um livro do banco de dados
 func DeleteBook(id int) bool {
 	result, err := db.Exec("DELETE FROM books WHERE id = $1", id)
 	if err != nil {

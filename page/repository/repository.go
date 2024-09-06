@@ -43,7 +43,6 @@ func getDBConnectionString() string {
 		config.Database.Host, config.Database.Port, config.Database.User, config.Database.Password, config.Database.Name)
 }
 
-// GetPages retorna todas as páginas de um livro
 func GetPages(bookID int) []model.Page {
 	rows, err := db.Query("SELECT book_id, page_number, text FROM pages WHERE book_id = $1", bookID)
 	if err != nil {
@@ -62,7 +61,6 @@ func GetPages(bookID int) []model.Page {
 	return pages
 }
 
-// GetPageByID retorna uma página específica pelo número da página e ID do livro
 func GetPageByID(bookID, pageNumber int) *model.Page {
 	row := db.QueryRow("SELECT book_id, page_number, text FROM pages WHERE book_id = $1 AND page_number = $2", bookID, pageNumber)
 	var page model.Page
@@ -72,7 +70,6 @@ func GetPageByID(bookID, pageNumber int) *model.Page {
 	return &page
 }
 
-// CreatePage adiciona uma nova página ao banco de dados
 func CreatePage(newPage model.Page) {
 	_, err := db.Exec("INSERT INTO pages (book_id, page_number, text) VALUES ($1, $2, $3)", newPage.BookID, newPage.PageNumber, newPage.Text)
 	if err != nil {
@@ -80,7 +77,6 @@ func CreatePage(newPage model.Page) {
 	}
 }
 
-// UpdatePage atualiza uma página existente no banco de dados
 func UpdatePage(updatedPage model.Page) bool {
 	result, err := db.Exec("UPDATE pages SET text = $3 WHERE book_id = $1 AND page_number = $2", updatedPage.BookID, updatedPage.PageNumber, updatedPage.Text)
 	if err != nil {
@@ -90,7 +86,6 @@ func UpdatePage(updatedPage model.Page) bool {
 	return rowsAffected > 0
 }
 
-// DeletePage remove uma página do banco de dados
 func DeletePage(bookID, pageNumber int) bool {
 	result, err := db.Exec("DELETE FROM pages WHERE book_id = $1 AND page_number = $2", bookID, pageNumber)
 	if err != nil {
